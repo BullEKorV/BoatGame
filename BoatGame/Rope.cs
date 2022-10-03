@@ -17,7 +17,7 @@ public class Rope
         {
             foreach (Port port in Port.ports)
             {
-                if (Vector2.Distance(new Vector2(port.rect.x, port.rect.height), Raylib.GetMousePosition()) <= 8)
+                if (Vector2.Distance(new Vector2(port.rect.x, port.rect.height), Raylib.GetMousePosition()) <= 18)
                     new Rope(new Vector2(port.rect.x, port.rect.height));
             }
         }
@@ -28,9 +28,12 @@ public class Rope
             current = null; // Clear current rope
         }
 
+        Vector2 mousePosConstricted = new Vector2(MathF.Min(MathF.Max(Raylib.GetMouseX(), 2), Raylib.GetScreenWidth() - 2),
+                MathF.Min(MathF.Max(Raylib.GetMouseY(), Port.height), Raylib.GetScreenHeight() - 2));
+
         // Create joints in rope
         if (Raylib.IsMouseButtonDown(MouseButton.MOUSE_BUTTON_LEFT))
-            if (current != null && Vector2.Distance(current.joints.Last(), Raylib.GetMousePosition()) > 10) current.joints.Add(Raylib.GetMousePosition());
+            if (current != null && Vector2.Distance(current.joints.Last(), mousePosConstricted) > 3) current.joints.Add(mousePosConstricted);
     }
     public static void Draw()
     {

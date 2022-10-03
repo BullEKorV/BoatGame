@@ -4,8 +4,8 @@ public class Game
     public int health = 3;
     public Game()
     {
-        Raylib.InitWindow(1280, 720, "Uwu");
-        // Raylib.SetTargetFPS(120);
+        Raylib.InitWindow(1920, 1080, "Uwu");
+        Raylib.ToggleFullscreen();
 
         Port.CreatePorts();
 
@@ -21,8 +21,18 @@ public class Game
     }
     void Update()
     {
+        // Difficulty
+        Boat.baseSpeed = 50 + (int)Raylib.GetTime();
+        Boat.maxBoats = (int)Math.Ceiling(Raylib.GetTime() / 20);
+
+
         // Boat logic
-        if (Boat.boats.Count < Boat.maxBoats) new Boat();
+        if (Boat.boats.Count < Boat.maxBoats)
+        {
+            Random rnd = new Random();
+            if (rnd.Next(Raylib.GetFPS() * 2) == 23)
+                new Boat();
+        }
 
         for (int i = 0; i < Boat.boats.Count; i++)
         {
@@ -36,10 +46,7 @@ public class Game
             {
                 score++;
                 Boat.boats.RemoveAt(i);
-                Boat.maxBoats = (int)MathF.Ceiling(score / 3f);
             }
-
-
         }
 
         // Rope logic
@@ -47,14 +54,15 @@ public class Game
     }
     void Draw()
     {
-        Raylib.DrawText(health.ToString(), 0, 0, 20, Color.GOLD);
-        Raylib.DrawText(score.ToString(), 0, 40, 20, Color.GOLD);
-
-        // Draw ropes
-        Rope.Draw();
+        Raylib.DrawText("Health: " + health.ToString(), 8, 5, 40, Color.RED);
+        Raylib.DrawText("Score: " + score.ToString(), Raylib.GetScreenWidth() - Raylib.MeasureText("Score:  " + score.ToString().ToString(), 40), 8, 40, Color.GOLD);
+        Raylib.DrawText(((int)Raylib.GetTime()).ToString(), Raylib.GetScreenWidth() / 2 - Raylib.MeasureText(((int)Raylib.GetTime()).ToString(), 50), 20, 50, Color.BLACK);
 
         // Draw ports
         Port.Draw();
+
+        // Draw ropes
+        Rope.Draw();
 
         // Draw boats
         for (int i = 0; i < Boat.boats.Count; i++)
